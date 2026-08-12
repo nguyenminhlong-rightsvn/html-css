@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>display: block / inline / inline-block</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .box {
+            /* width + height + margin để thấy rõ khác biệt giữa 3 loại */
+            width: 120px;
+            height: 60px;
+            margin: 10px;
+            padding: 10px;
+            background: #cfe8ff;
+            border: 2px solid #1a73e8;
+        }
+        .block        { display: block; }
+        .inline       { display: inline; }
+        .inline-block { display: inline-block; }
+    </style>
+</head>
+<body>
+    <h2>1. display: block</h2>
+    <p>Chiếm cả chiều rộng, tự xuống dòng. Nhận width/height/margin đầy đủ.</p>
+    <span class="box block">block 1</span>
+    <span class="box block">block 2</span>
+
+    <h2>2. display: inline</h2>
+    <p>Nằm cùng dòng. <strong>Bỏ qua</strong> width/height, margin trên/dưới không có tác dụng.</p>
+    <span class="box inline">inline 1</span>
+    <span class="box inline">inline 2</span>
+
+    <h2>3. display: inline-block</h2>
+    <p>Nằm cùng dòng như inline, nhưng vẫn nhận width/height/margin như block.</p>
+    <span class="box inline-block">inline-block 1</span>
+    <span class="box inline-block">inline-block 2</span>
+</body>
+</html>
