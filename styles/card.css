@@ -1,0 +1,116 @@
+:root {
+  --card-ink: #252b42;
+  --card-muted: #737373;
+  --card-price: #2e2e2e;
+  --card-dark: #1a1a1a;
+  --card-image-bg: #cdfefb;
+  --card-surface: #ffffff;
+  --card-border: #000000;
+  --card-page-bg: #f5f5f5;
+  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --card-btn-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--card-page-bg);
+}
+
+/* ===== Card ===== */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 29px;
+  width: 375px;
+  max-width: 100%;
+  padding: 24px;
+  background-color: var(--card-surface);
+  border: 1px solid var(--card-border);
+  border-radius: 25px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.card-media {
+  height: 242px;
+  background-color: var(--card-image-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  color: var(--card-ink);
+}
+
+.card-brand {
+  font-size: 0.875rem;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: var(--card-muted);
+}
+
+.card-price {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: var(--card-price);
+}
+
+.card-add {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-family: inherit;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--card-surface);
+  background-color: var(--card-dark);
+  border: none;
+  border-radius: 25px;
+  box-shadow: var(--card-btn-shadow);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card-add:hover {
+  transform: scale(1.1);
+}
+
+.card-add:active {
+  transform: scale(1);
+}
