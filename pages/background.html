@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuộc tính background</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .box {
+            /* khung chung để so sánh các giá trị background */
+            width: 220px;
+            height: 140px;
+            margin: 10px 10px 20px 0;
+            display: inline-block;
+            border: 2px solid #333;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 1px 2px #000;
+        }
+
+        /* 1. background-color */
+        .color-hex     { background-color: #1a73e8; }
+        .color-rgba    { background-color: rgba(26, 115, 232, 0.3); }
+        .color-name    { background-color: tomato; }
+
+        /* 2. background-image */
+        .img-url       { background-image: url("../images/snickers.jpg"); }
+        .img-gradient  { background-image: linear-gradient(135deg, #4f46e5, #06b6d4); }
+        .img-radial    { background-image: radial-gradient(circle, #fbbf24, #b45309); }
+
+        /* 3. background-repeat */
+        .repeat        { background-image: url("../images/snickers.jpg"); background-size: 60px; background-repeat: repeat; }
+        .repeat-x      { background-image: url("../images/snickers.jpg"); background-size: 60px; background-repeat: repeat-x; }
+        .no-repeat     { background-image: url("../images/snickers.jpg"); background-size: 60px; background-repeat: no-repeat; }
+
+        /* 4. background-size */
+        .size-auto     { background: url("../images/snickers.jpg") no-repeat; }
+        .size-cover    { background: url("../images/snickers.jpg") no-repeat; background-size: cover; }
+        .size-contain  { background: #eee url("../images/snickers.jpg") no-repeat; background-size: contain; }
+
+        /* 5. background-position */
+        .pos-left      { background: #eee url("../images/snickers.jpg") no-repeat left center / 80px; }
+        .pos-center    { background: #eee url("../images/snickers.jpg") no-repeat center / 80px; }
+        .pos-br        { background: #eee url("../images/snickers.jpg") no-repeat right bottom / 80px; }
+
+        /* 6. background-attachment: cuộn trong khung để thấy fixed đứng yên */
+        .scroll-demo {
+            width: 460px;
+            height: 180px;
+            overflow: auto;
+            border: 2px solid #333;
+        }
+        .scroll-demo > div { height: 500px; padding: 10px; color: #fff; text-shadow: 0 1px 2px #000; }
+        .attach-scroll { background: url("../images/snickers.jpg") no-repeat center / cover; background-attachment: scroll; }
+        .attach-fixed  { background: url("../images/snickers.jpg") no-repeat center / cover; background-attachment: local; }
+
+        /* 7. nhiều lớp background: lớp đầu nằm trên cùng */
+        .multi {
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.1)),
+                url("../images/snickers.jpg") no-repeat center / cover;
+        }
+
+        /* 8. shorthand: color image repeat position / size */
+        .shorthand { background: #111 url("../images/snickers.jpg") no-repeat right center / 100px; }
+
+        code { background: #f1f1f1; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Thực hành thuộc tính background</h1>
+
+    <h2>1. background-color</h2>
+    <p>Màu nền. Viết bằng <code>#hex</code>, <code>rgb()/rgba()</code> (có độ trong suốt) hoặc tên màu.</p>
+    <div class="box color-hex">#1a73e8</div>
+    <div class="box color-rgba">rgba(..., 0.3)</div>
+    <div class="box color-name">tomato</div>
+
+    <h2>2. background-image</h2>
+    <p>Ảnh nền bằng <code>url()</code>, hoặc gradient (gradient cũng được tính là ảnh).</p>
+    <div class="box img-url">url()</div>
+    <div class="box img-gradient">linear-gradient</div>
+    <div class="box img-radial">radial-gradient</div>
+
+    <h2>3. background-repeat</h2>
+    <p>Mặc định ảnh lặp kín khung. <code>repeat-x</code> chỉ lặp ngang, <code>no-repeat</code> không lặp.</p>
+    <div class="box repeat">repeat</div>
+    <div class="box repeat-x">repeat-x</div>
+    <div class="box no-repeat">no-repeat</div>
+
+    <h2>4. background-size</h2>
+    <p><code>cover</code>: phủ kín, có thể bị cắt. <code>contain</code>: vừa khung, có thể chừa khoảng trống.</p>
+    <div class="box size-auto">auto (mặc định)</div>
+    <div class="box size-cover">cover</div>
+    <div class="box size-contain">contain</div>
+
+    <h2>5. background-position</h2>
+    <p>Vị trí ảnh trong khung: từ khoá (<code>left / center / right bottom</code>), % hoặc px.</p>
+    <div class="box pos-left">left center</div>
+    <div class="box pos-center">center</div>
+    <div class="box pos-br">right bottom</div>
+
+    <h2>6. background-attachment</h2>
+    <p>Cuộn thử 2 khung: <code>scroll</code> ảnh dính theo khung, <code>local</code> ảnh cuộn cùng nội dung.</p>
+    <div class="scroll-demo"><div class="attach-scroll">scroll — cuộn xuống, ảnh đứng yên</div></div>
+    <div class="scroll-demo"><div class="attach-fixed">local — cuộn xuống, ảnh chạy theo</div></div>
+
+    <h2>7. Nhiều lớp background</h2>
+    <p>Ngăn cách bằng dấu phẩy, lớp viết trước nằm trên. Mẹo hay dùng: phủ gradient tối lên ảnh cho chữ dễ đọc.</p>
+    <div class="box multi">gradient + ảnh</div>
+
+    <h2>8. Viết gộp (shorthand)</h2>
+    <p><code>background: color image repeat position / size;</code> — gộp tất cả vào một dòng.</p>
+    <div class="box shorthand">shorthand</div>
+
+    <h2>Bài tập</h2>
+    <ol>
+        <li>Đổi <code>.multi</code> thành gradient tím phủ lên ảnh, chữ vẫn đọc rõ.</li>
+        <li>Làm một banner cao 300px, ảnh nền <code>cover</code>, canh giữa, có chữ tiêu đề ở giữa.</li>
+        <li>Dùng <code>repeating-linear-gradient</code> tạo nền kẻ sọc.</li>
+    </ol>
+</body>
+</html>
