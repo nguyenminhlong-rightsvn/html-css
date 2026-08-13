@@ -358,7 +358,7 @@ ul {
   background: var(--overlay-dark);
 }
 
-.vcentered {
+.start-page .section-content {
   display: grid;
   place-items: center;
   position: relative;
@@ -993,9 +993,13 @@ textarea.form-control {
     min-height: 100vh;
   }
 
-  /* Tablet: 3 cột rút còn 2 */
-  .portfolio-grid.three-columns {
-    grid-template-columns: repeat(2, 1fr);
+  /* Mobile: .animated-section thành position:static nên chiều cao là auto,
+     height:100% của .section-content không tính được -> chữ dính lên đầu.
+     Cho nó chiều cao tối thiểu bằng màn hình trừ padding (70px trên + 40px dưới)
+     để place-items:center có chỗ mà căn giữa. */
+  .start-page .section-content {
+    height: auto;
+    min-height: calc(100vh - 110px);
   }
 
   .title-block h2 {
@@ -1021,9 +1025,11 @@ textarea.form-control {
     font-size: 1.125rem;
   }
 
+  /* Phải ghi đủ .portfolio-grid.two-columns / .blog-grid.two-columns,
+     vì selector 2 class đè lên .two-columns đứng một mình. */
   .two-columns,
   .split-layout,
-  .portfolio-grid.three-columns,
+  .portfolio-grid.two-columns,
   .blog-grid.two-columns {
     grid-template-columns: 1fr;
   }
