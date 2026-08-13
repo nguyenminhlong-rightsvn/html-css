@@ -859,14 +859,18 @@ textarea.form-control {
     transition: all 0.25s ease-in-out;
   }
 
-  .header:target {
+  /* Panel mở: JS gắn class .is-open.
+     .header:target là đường dự phòng, dùng khi JS chưa chạy. */
+  .header:target,
+  .header.is-open {
     visibility: visible;
     opacity: 1;
     transform: translateX(0);
   }
 
-  /* Lớp phủ: bấm ra ngoài để đóng, đồng thời che nội dung phía sau */
-  .menu-backdrop {
+  /* Lớp phủ CHỈ hiện khi menu đang mở, nếu không sẽ chặn hết thao tác trên trang */
+  .page-content:has(#menu:target) .menu-backdrop,
+  .page-content:has(.header.is-open) .menu-backdrop {
     display: block;
     position: fixed;
     inset: 0;
@@ -926,7 +930,7 @@ textarea.form-control {
     background-color: var(--accent);
     border-radius: 30px;
     cursor: pointer;
-    z-index: 97;
+    z-index: 99;
   }
 
   /* Nút đóng nằm sẵn trong panel, panel đóng thì nó trôi ra ngoài màn hình luôn */

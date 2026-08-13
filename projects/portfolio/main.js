@@ -21,6 +21,7 @@ menuLinks.forEach((link) => {
     event.preventDefault();
     setActiveMenu(id);
     showSection(id);
+    closeMenu();
     history.pushState(null, '', `#${id}`);
   });
 });
@@ -30,6 +31,26 @@ if (hash) {
   setActiveMenu(hash);
   showSection(hash);
 }
+
+// Menu toggle
+const header = document.querySelector('.header');
+const menuToggle = document.querySelector('.menu-toggle');
+const menuClose = document.querySelector('.menu-close');
+const menuBackdrop = document.querySelector('.menu-backdrop');
+
+function openMenu(event) {
+  event.preventDefault();
+  header.classList.add('is-open');
+}
+
+function closeMenu(event) {
+  if (event) event.preventDefault();
+  header.classList.remove('is-open');
+}
+
+if (menuToggle) menuToggle.addEventListener('click', openMenu);
+if (menuClose) menuClose.addEventListener('click', closeMenu);
+if (menuBackdrop) menuBackdrop.addEventListener('click', closeMenu);
 
 // Ảnh ngẫu nhiên cho dự án
 function loadRandomImages(selector, width, height, prefix) {
@@ -51,12 +72,12 @@ function renderBlog(posts) {
 
   blogList.innerHTML = items
     .map((post, index) => {
-      const title = post.title || `Bài viết ${index + 1}`;
+      const title = post.title || `記事 ${index + 1}`;
       const tags = (post.tags || [])
         .map((tag) => `<span class="category">${tag}</span>`)
         .join('');
-      const views = post.views ? `${post.views} views` : 'Blog';
-      const content = post.body ? post.body.slice(0, 100) : 'Nội dung bài viết';
+      const views = post.views ? `${post.views} 回閲覧` : 'ブログ';
+      const content = post.body ? post.body.slice(0, 100) : '記事の本文';
       const image = `https://picsum.photos/seed/blog-${post.id}/640/300`;
 
       return `
@@ -68,7 +89,7 @@ function renderBlog(posts) {
             <img src="${image}" alt="${title}" />
           </div>
           <div class="post-info">
-            <div class="post-date">${tags || '<span class="category">Blog</span>'}</div>
+            <div class="post-date">${tags || '<span class="category">ブログ</span>'}</div>
             <h3 class="blog-item-title">${title}</h3>
             <p>${content}...</p>
           </div>
@@ -116,30 +137,30 @@ if (contactForm) {
     let valid = true;
 
     if (!formFields.name.value.trim()) {
-      showError(formFields.name, 'Vui lòng nhập họ tên.');
+      showError(formFields.name, 'お名前を入力してください。');
       valid = false;
     } else clearError(formFields.name);
 
     if (!formFields.email.value.trim()) {
-      showError(formFields.email, 'Vui lòng nhập email.');
+      showError(formFields.email, 'メールアドレスを入力してください。');
       valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formFields.email.value.trim())) {
-      showError(formFields.email, 'Vui lòng nhập email hợp lệ.');
+      showError(formFields.email, 'メールアドレスの形式が正しくありません。');
       valid = false;
     } else clearError(formFields.email);
 
     if (!formFields.subject.value.trim()) {
-      showError(formFields.subject, 'Vui lòng nhập tiêu đề.');
+      showError(formFields.subject, '件名を入力してください。');
       valid = false;
     } else clearError(formFields.subject);
 
     if (!formFields.message.value.trim()) {
-      showError(formFields.message, 'Vui lòng nhập nội dung.');
+      showError(formFields.message, 'お問い合わせ内容を入力してください。');
       valid = false;
     } else clearError(formFields.message);
 
     if (valid) {
-      successMessage.textContent = 'Tin nhắn của bạn đã được gửi thành công!';
+      successMessage.textContent = '送信が完了しました。ありがとうございます。';
       successMessage.classList.add('show');
       contactForm.reset();
     }
