@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bố cục với Flexbox</title>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: sans-serif; margin: 0; line-height: 1.6; color: #222; }
+        .content { padding: 0 20px 60px; max-width: 900px; }
+        code { background: #f1f1f1; padding: 2px 6px; border-radius: 4px; }
+        h2 { margin-top: 40px; border-top: 1px solid #e5e7eb; padding-top: 24px; }
+        h3 { margin-bottom: 6px; font-size: 15px; color: #555; }
+
+        /* Header dính, bản thân nó cũng là một flex container */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 12px 20px;
+            background: #1a73e8;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .site-header a { color: #fff; }
+
+        /* ====== Khung demo chung ====== */
+        /* .demo = flex container, .box = flex item */
+        .demo {
+            display: flex;           /* bật flexbox: các con thành flex item */
+            gap: 8px;
+            border: 2px dashed #999;
+            background: #fafafa;
+            padding: 10px;
+            margin-bottom: 18px;
+        }
+        .box {
+            display: grid;
+            place-items: center;
+            min-width: 90px;
+            padding: 14px 10px;
+            background: #1a73e8;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .box:nth-child(2) { background: #16a34a; }
+        .box:nth-child(3) { background: #dc2626; }
+        .box:nth-child(4) { background: #7c3aed; }
+        .box:nth-child(5) { background: #ea580c; }
+
+        /* 1. flex-direction — đổi trục chính */
+        .dir-row            { flex-direction: row; }             /* mặc định: trái → phải */
+        .dir-row-reverse    { flex-direction: row-reverse; }     /* phải → trái */
+        .dir-column         { flex-direction: column; }          /* trên → dưới */
+        .dir-column-reverse { flex-direction: column-reverse; }
+
+        /* 2. justify-content — canh theo TRỤC CHÍNH (ngang, khi direction: row) */
+        .jc-start   { justify-content: flex-start; }   /* mặc định */
+        .jc-center  { justify-content: center; }
+        .jc-end     { justify-content: flex-end; }
+        .jc-between { justify-content: space-between; } /* mép ngoài sát viền */
+        .jc-around  { justify-content: space-around; }  /* mỗi item có lề 2 bên bằng nhau */
+        .jc-evenly  { justify-content: space-evenly; }  /* mọi khoảng cách bằng nhau */
+
+        /* 3. align-items — canh theo TRỤC PHỤ (dọc, khi direction: row) */
+        .demo.tall { height: 140px; }
+        .ai-stretch  { align-items: stretch; }    /* mặc định: item cao bằng container */
+        .ai-start    { align-items: flex-start; }
+        .ai-center   { align-items: center; }
+        .ai-end      { align-items: flex-end; }
+        .ai-baseline { align-items: baseline; }   /* thẳng hàng theo chân chữ */
+        .ai-baseline .box:nth-child(2) { font-size: 28px; }
+        .ai-baseline .box:nth-child(3) { font-size: 12px; }
+
+        /* 4. flex-wrap — cho phép xuống dòng khi hết chỗ */
+        .wrap-nowrap { flex-wrap: nowrap; }   /* mặc định: ép co lại, không xuống dòng */
+        .wrap-wrap   { flex-wrap: wrap; }
+        .wide { min-width: 240px; }           /* item to để thấy rõ hiệu ứng wrap */
+
+        /* 5. align-content — canh CÁC DÒNG (chỉ có tác dụng khi đã wrap) */
+        .demo.multi { height: 220px; flex-wrap: wrap; }
+        .ac-start   { align-content: flex-start; }
+        .ac-center  { align-content: center; }
+        .ac-between { align-content: space-between; }
+
+        /* 6. flex-grow — chia phần dư của trục chính */
+        .grow-1 { flex-grow: 1; }
+        .grow-2 { flex-grow: 2; }
+
+        /* 7. flex-basis — kích thước khởi điểm trên trục chính */
+        .basis-100 { flex-basis: 100px; }
+        .basis-300 { flex-basis: 300px; }
+
+        /* 8. flex shorthand: grow shrink basis */
+        .flex-1 { flex: 1; }          /* = 1 1 0  → chia đều, bỏ qua nội dung */
+        .flex-auto { flex: auto; }    /* = 1 1 auto → chia theo nội dung */
+        .flex-none { flex: none; }    /* = 0 0 auto → giữ nguyên, không co giãn */
+
+        /* 9. align-self — ghi đè align-items cho riêng 1 item */
+        .self-start  { align-self: flex-start; }
+        .self-center { align-self: center; }
+        .self-end    { align-self: flex-end; }
+
+        /* 10. order — đổi thứ tự hiển thị, không đổi thứ tự trong HTML */
+        .order-1  { order: 1; }
+        .order-m1 { order: -1; }  /* số nhỏ hơn đứng trước, mặc định là 0 */
+
+        /* ====== MẪU 1: căn giữa tuyệt đối ====== */
+        .center-demo {
+            display: flex;
+            justify-content: center;  /* giữa theo chiều ngang */
+            align-items: center;      /* giữa theo chiều dọc */
+            height: 180px;
+            border: 2px dashed #999;
+            background: #fafafa;
+            margin-bottom: 18px;
+        }
+
+        /* ====== MẪU 2: navbar ====== */
+        .navbar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 16px;
+            background: #111;
+            color: #fff;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+        .navbar .logo { font-weight: bold; font-size: 18px; }
+        .navbar .menu { display: flex; gap: 16px; }
+        .navbar .menu a { color: #fff; text-decoration: none; }
+        .navbar .menu a:hover { text-decoration: underline; }
+        /* margin-left: auto nuốt hết chỗ trống → đẩy phần còn lại sang phải */
+        .navbar .login { margin-left: auto; background: #1a73e8; padding: 6px 14px; border-radius: 4px; }
+
+        /* ====== MẪU 3: lưới card co giãn ====== */
+        .cards { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; }
+        .card {
+            flex: 1 1 220px;  /* co giãn được, rộng tối thiểu 220px rồi mới xuống dòng */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        .card h4 { margin: 0 0 8px; }
+        .card p { margin: 0; color: #555; font-size: 14px; }
+
+        .note { background: #fff7ed; border-left: 4px solid #ea580c; padding: 10px 14px; }
+    </style>
+</head>
+<body id="top">
+    <header class="site-header">
+        <strong>flexbox demo</strong>
+        <a href="../index.html">← Về trang chủ</a>
+        <span>(thanh này cũng là một flex container)</span>
+    </header>
+
+    <div class="content">
+        <h1>Thực hành bố cục với Flexbox</h1>
+        <p>
+            Flexbox là mô hình bố cục <strong>một chiều</strong>: sắp xếp theo hàng ngang
+            hoặc cột dọc. Chỉ cần đặt <code>display: flex</code> cho phần tử cha
+            (<em>flex container</em>), mọi con trực tiếp trở thành <em>flex item</em>.
+        </p>
+        <p class="note">
+            <strong>Hai trục cần nhớ:</strong> <em>trục chính</em> (main axis) là hướng
+            các item xếp theo, do <code>flex-direction</code> quyết định.
+            <em>Trục phụ</em> (cross axis) vuông góc với nó.
+            <code>justify-content</code> canh theo trục chính,
+            <code>align-items</code> canh theo trục phụ.
+        </p>
+
+        <h2>1. flex-direction — chọn trục chính</h2>
+
+        <h3>row (mặc định)</h3>
+        <div class="demo dir-row">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>row-reverse</h3>
+        <div class="demo dir-row-reverse">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>column</h3>
+        <div class="demo dir-column">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>column-reverse</h3>
+        <div class="demo dir-column-reverse">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <p class="note">
+            Đổi <code>flex-direction</code> là đổi luôn ý nghĩa của
+            <code>justify-content</code> và <code>align-items</code>. Với
+            <code>column</code>, <code>justify-content</code> canh theo chiều dọc.
+        </p>
+
+        <h2>2. justify-content — canh theo trục chính</h2>
+
+        <h3>flex-start (mặc định)</h3>
+        <div class="demo jc-start">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>center</h3>
+        <div class="demo jc-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>flex-end</h3>
+        <div class="demo jc-end">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>space-between — hai đầu sát viền</h3>
+        <div class="demo jc-between">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>space-around — mỗi item có lề hai bên bằng nhau</h3>
+        <div class="demo jc-around">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>space-evenly — mọi khoảng trống bằng nhau</h3>
+        <div class="demo jc-evenly">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h2>3. align-items — canh theo trục phụ</h2>
+        <p>Các khung dưới đây cao 140px để thấy rõ chiều dọc.</p>
+
+        <h3>stretch (mặc định) — item kéo cao bằng container</h3>
+        <div class="demo tall ai-stretch">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>flex-start</h3>
+        <div class="demo tall ai-start">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>center</h3>
+        <div class="demo tall ai-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>flex-end</h3>
+        <div class="demo tall ai-end">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>baseline — thẳng hàng theo chân chữ, dù cỡ chữ khác nhau</h3>
+        <div class="demo tall ai-baseline">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h2>4. flex-wrap — cho phép xuống dòng</h2>
+
+        <h3>nowrap (mặc định) — item bị ép co lại cho vừa một dòng</h3>
+        <div class="demo wrap-nowrap">
+            <div class="box wide">1</div><div class="box wide">2</div>
+            <div class="box wide">3</div><div class="box wide">4</div>
+        </div>
+
+        <h3>wrap — hết chỗ thì xuống dòng, giữ nguyên kích thước</h3>
+        <div class="demo wrap-wrap">
+            <div class="box wide">1</div><div class="box wide">2</div>
+            <div class="box wide">3</div><div class="box wide">4</div>
+        </div>
+
+        <p class="note">
+            <code>gap</code> tạo khoảng cách giữa các item mà không cần
+            <code>margin</code>, và không thừa lề ở hai đầu. Mọi demo trên trang này
+            đều dùng <code>gap: 8px</code>.
+        </p>
+
+        <h2>5. align-content — canh các dòng khi đã wrap</h2>
+        <p>
+            Chỉ có tác dụng khi container có <strong>nhiều dòng</strong>
+            (<code>flex-wrap: wrap</code>) và còn dư chỗ theo trục phụ.
+        </p>
+
+        <h3>flex-start</h3>
+        <div class="demo multi ac-start">
+            <div class="box wide">1</div><div class="box wide">2</div>
+            <div class="box wide">3</div><div class="box wide">4</div>
+        </div>
+
+        <h3>center</h3>
+        <div class="demo multi ac-center">
+            <div class="box wide">1</div><div class="box wide">2</div>
+            <div class="box wide">3</div><div class="box wide">4</div>
+        </div>
+
+        <h3>space-between</h3>
+        <div class="demo multi ac-between">
+            <div class="box wide">1</div><div class="box wide">2</div>
+            <div class="box wide">3</div><div class="box wide">4</div>
+        </div>
+
+        <h2>6. flex-grow — chia phần chỗ trống còn dư</h2>
+        <p>Mặc định <code>flex-grow: 0</code>: item không nở ra, chỗ dư bỏ trống.</p>
+
+        <h3>Ô 2 có <code>flex-grow: 1</code> — nuốt hết chỗ dư</h3>
+        <div class="demo">
+            <div class="box">1</div>
+            <div class="box grow-1">2 (grow: 1)</div>
+            <div class="box">3</div>
+        </div>
+
+        <h3>Ô 2 grow 1, ô 3 grow 2 — chỗ dư chia theo tỉ lệ 1 : 2</h3>
+        <div class="demo">
+            <div class="box">1</div>
+            <div class="box grow-1">2 (grow: 1)</div>
+            <div class="box grow-2">3 (grow: 2)</div>
+        </div>
+
+        <h2>7. flex-shrink — co lại khi thiếu chỗ</h2>
+        <p>
+            Mặc định <code>flex-shrink: 1</code>: thiếu chỗ thì item tự co
+            (đúng như demo <code>nowrap</code> ở trên). Đặt
+            <code>flex-shrink: 0</code> để cấm co — hay dùng cho logo, icon, nút.
+        </p>
+
+        <h2>8. flex-basis và shorthand <code>flex</code></h2>
+        <p>
+            <code>flex-basis</code> là kích thước khởi điểm trên trục chính, được ưu tiên
+            hơn <code>width</code>. Shorthand: <code>flex: grow shrink basis</code>.
+        </p>
+
+        <h3>flex-basis: 100px và 300px</h3>
+        <div class="demo">
+            <div class="box basis-100">basis 100</div>
+            <div class="box basis-300">basis 300</div>
+        </div>
+
+        <h3><code>flex: 1</code> (= 1 1 0) — chia đều tuyệt đối, bỏ qua nội dung</h3>
+        <div class="demo">
+            <div class="box flex-1">ngắn</div>
+            <div class="box flex-1">nội dung dài hơn nhiều nhiều</div>
+        </div>
+
+        <h3><code>flex: auto</code> (= 1 1 auto) — chia theo độ dài nội dung</h3>
+        <div class="demo">
+            <div class="box flex-auto">ngắn</div>
+            <div class="box flex-auto">nội dung dài hơn nhiều nhiều</div>
+        </div>
+
+        <h3><code>flex: none</code> (= 0 0 auto) — giữ nguyên, không co không giãn</h3>
+        <div class="demo">
+            <div class="box flex-none">ngắn</div>
+            <div class="box flex-none">nội dung dài hơn nhiều nhiều</div>
+        </div>
+
+        <h2>9. align-self — ghi đè cho riêng một item</h2>
+        <div class="demo tall ai-center">
+            <div class="box self-start">self: start</div>
+            <div class="box">theo container<br>(center)</div>
+            <div class="box self-end">self: end</div>
+        </div>
+
+        <h2>10. order — đổi thứ tự hiển thị</h2>
+        <p>
+            Thứ tự trong HTML vẫn là 1 → 2 → 3, chỉ thứ tự <em>hiển thị</em> thay đổi.
+            Mặc định mọi item có <code>order: 0</code>, số nhỏ hơn đứng trước.
+        </p>
+        <div class="demo">
+            <div class="box order-1">1 (order: 1)</div>
+            <div class="box">2 (order: 0)</div>
+            <div class="box order-m1">3 (order: -1)</div>
+        </div>
+        <p class="note">
+            Cẩn thận: <code>order</code> không đổi thứ tự đọc của trình đọc màn hình và
+            thứ tự nhấn phím Tab. Đừng dùng để sắp xếp lại nội dung quan trọng.
+        </p>
+
+        <h2>11. Mẫu thường gặp 1 — căn giữa tuyệt đối</h2>
+        <p>Ba dòng CSS thay cho mọi mẹo canh giữa ngày xưa.</p>
+        <div class="center-demo">
+            <div class="box">Ở giữa</div>
+        </div>
+
+        <h2>12. Mẫu thường gặp 2 — navbar</h2>
+        <p>
+            Mẹo chính: <code>margin-left: auto</code> trên nút đăng nhập để đẩy nó
+            sang tận bên phải.
+        </p>
+        <nav class="navbar">
+            <span class="logo">MyShop</span>
+            <div class="menu">
+                <a href="#top">Trang chủ</a>
+                <a href="#top">Sản phẩm</a>
+                <a href="#top">Liên hệ</a>
+            </div>
+            <a href="#top" class="login">Đăng nhập</a>
+        </nav>
+
+        <h2>13. Mẫu thường gặp 3 — lưới card co giãn</h2>
+        <p>
+            <code>flex: 1 1 220px</code> + <code>flex-wrap: wrap</code>: card tự dàn hàng,
+            màn hình hẹp thì tự xuống dòng. Thu nhỏ cửa sổ trình duyệt để thấy.
+        </p>
+        <div class="cards">
+            <div class="card"><h4>Card 1</h4><p>Rộng tối thiểu 220px, còn lại co giãn theo chỗ trống.</p></div>
+            <div class="card"><h4>Card 2</h4><p>Không cần media query vẫn tự đáp ứng.</p></div>
+            <div class="card"><h4>Card 3</h4><p>Thêm bớt card không phải sửa CSS.</p></div>
+            <div class="card"><h4>Card 4</h4><p>Hết chỗ thì tự xuống dòng.</p></div>
+        </div>
+
+        <h2>Tổng kết</h2>
+        <p><strong>Đặt trên container:</strong></p>
+        <ul>
+            <li><code>display: flex</code> — bật flexbox</li>
+            <li><code>flex-direction</code> — chọn trục chính (row / column)</li>
+            <li><code>justify-content</code> — canh theo trục chính</li>
+            <li><code>align-items</code> — canh theo trục phụ</li>
+            <li><code>flex-wrap</code> — cho phép xuống dòng</li>
+            <li><code>align-content</code> — canh các dòng (chỉ khi đã wrap)</li>
+            <li><code>gap</code> — khoảng cách giữa các item</li>
+        </ul>
+        <p><strong>Đặt trên item:</strong></p>
+        <ul>
+            <li><code>flex-grow</code> / <code>flex-shrink</code> / <code>flex-basis</code>
+                — hoặc gộp lại thành <code>flex</code></li>
+            <li><code>align-self</code> — ghi đè <code>align-items</code></li>
+            <li><code>order</code> — đổi thứ tự hiển thị</li>
+        </ul>
+        <p>
+            Flexbox làm bố cục <strong>một chiều</strong>. Cần lưới hai chiều
+            (hàng và cột cùng lúc) thì dùng CSS Grid.
+        </p>
+
+        <h2>Bài tập</h2>
+        <ol>
+            <li>Sửa navbar ở mục 12 để menu nằm chính giữa, logo trái, nút đăng nhập phải.</li>
+            <li>Dùng <code>flex-direction: column</code> làm một sidebar dọc có 4 mục,
+                mục cuối bị đẩy xuống đáy.</li>
+            <li>Làm lưới 3 card đều nhau trên màn rộng, 1 card mỗi dòng trên màn hẹp.</li>
+        </ol>
+    </div>
+</body>
+</html>
