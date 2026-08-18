@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bố cục với CSS Grid</title>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: sans-serif; margin: 0; line-height: 1.6; color: #222; }
+        .content { padding: 0 20px 60px; max-width: 900px; }
+        code { background: #f1f1f1; padding: 2px 6px; border-radius: 4px; }
+        h2 { margin-top: 40px; border-top: 1px solid #e5e7eb; padding-top: 24px; }
+        h3 { margin-bottom: 6px; font-size: 15px; color: #555; }
+
+        /* Header dính */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 12px 20px;
+            background: #1a73e8;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .site-header a { color: #fff; }
+
+        /* ====== Khung demo chung ====== */
+        /* .demo = grid container, .box = grid item */
+        .demo {
+            display: grid;           /* bật grid: các con trực tiếp thành grid item */
+            gap: 8px;
+            border: 2px dashed #999;
+            background: #fafafa;
+            padding: 10px;
+            margin-bottom: 18px;
+        }
+        .box {
+            display: grid;
+            place-items: center;
+            padding: 14px 10px;
+            background: #1a73e8;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .box:nth-child(2) { background: #16a34a; }
+        .box:nth-child(3) { background: #dc2626; }
+        .box:nth-child(4) { background: #7c3aed; }
+        .box:nth-child(5) { background: #ea580c; }
+        .box:nth-child(6) { background: #0891b2; }
+
+        /* 1. grid-template-columns — định nghĩa số cột và độ rộng từng cột */
+        .cols-fixed  { grid-template-columns: 100px 150px 200px; }  /* cố định */
+        .cols-fr     { grid-template-columns: 1fr 1fr 1fr; }        /* chia đều chỗ trống */
+        .cols-mix    { grid-template-columns: 100px 1fr 2fr; }      /* cố định + co giãn */
+        .cols-repeat { grid-template-columns: repeat(4, 1fr); }     /* = 1fr 1fr 1fr 1fr */
+
+        /* 2. grid-template-rows — chiều cao các hàng */
+        .rows-fixed { grid-template-columns: repeat(3, 1fr); grid-template-rows: 60px 120px; }
+
+        /* 3. gap — khe giữa các ô */
+        .gap-0  { grid-template-columns: repeat(3, 1fr); gap: 0; }
+        .gap-24 { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .gap-rc { grid-template-columns: repeat(3, 1fr); row-gap: 30px; column-gap: 4px; }
+
+        /* 4. cho item chiếm nhiều ô — lưới 4 cột có 5 vạch dọc: 1..5 */
+        .lines { grid-template-columns: repeat(4, 1fr); }
+        .col-1-3   { grid-column: 1 / 3; }   /* từ vạch 1 đến vạch 3 → chiếm 2 cột */
+        .col-span2 { grid-column: span 2; }  /* chiếm 2 cột kể từ vị trí hiện tại */
+        .col-full  { grid-column: 1 / -1; }  /* -1 là vạch cuối → chiếm hết chiều ngang */
+        .row-span2 { grid-row: span 2; }     /* chiếm 2 hàng */
+
+        /* 5. justify-items / align-items — canh nội dung BÊN TRONG từng ô */
+        .demo.tall { height: 180px; }
+        .three { grid-template-columns: repeat(3, 1fr); }
+        .ji-center { justify-items: center; }
+        .ji-end    { justify-items: end; }
+        .ai-start  { align-items: start; }
+        .ai-center { align-items: center; }
+        .ai-end    { align-items: end; }
+
+        /* 6. justify-content / align-content — canh CẢ LƯỚI trong container */
+        /* Chỉ thấy được khi lưới nhỏ hơn container (cột dùng px, không dùng fr) */
+        .small { grid-template-columns: repeat(3, 80px); }
+        .jc-center  { justify-content: center; }
+        .jc-between { justify-content: space-between; }
+        .ac-center  { align-content: center; }
+
+        /* 7. justify-self / align-self — ghi đè cho riêng một ô */
+        .self-start  { justify-self: start; align-self: start; }
+        .self-center { justify-self: center; align-self: center; }
+        .self-end    { justify-self: end; align-self: end; }
+
+        /* ====== MẪU: bố cục trang đơn giản, 3 cột ====== */
+        .page-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .page-layout > div { padding: 16px; border-radius: 4px; color: #fff; font-weight: bold; }
+        .page-layout .hd   { grid-column: 1 / -1; background: #1a73e8; }  /* trải hết 3 cột */
+        .page-layout .nav  { background: #16a34a; }
+        .page-layout .main { grid-column: span 2; background: #555; }     /* rộng 2 cột */
+        .page-layout .ft   { grid-column: 1 / -1; background: #dc2626; }
+
+        .note { background: #fff7ed; border-left: 4px solid #ea580c; padding: 10px 14px; }
+    </style>
+</head>
+<body id="top">
+    <header class="site-header">
+        <strong>grid demo</strong>
+        <a href="../index.html">← Về trang chủ</a>
+    </header>
+
+    <div class="content">
+        <h1>Thực hành bố cục với CSS Grid</h1>
+        <p>
+            Grid là mô hình bố cục <strong>hai chiều</strong>: chia hàng và cột cùng lúc.
+            Đặt <code>display: grid</code> cho phần tử cha (<em>grid container</em>),
+            mọi con trực tiếp trở thành <em>grid item</em>.
+        </p>
+        <p class="note">
+            <strong>Khác biệt với Flexbox:</strong> Flexbox xếp item theo
+            <em>một chiều</em> (hàng hoặc cột). Grid vẽ sẵn <em>khung lưới</em> hai chiều
+            rồi xếp item vào. Bố cục cả trang → Grid. Sắp một hàng nút, một navbar → Flexbox.
+        </p>
+
+        <h2>1. grid-template-columns — chia cột</h2>
+
+        <h3>Cột cố định: <code>100px 150px 200px</code></h3>
+        <div class="demo cols-fixed">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>Đơn vị <code>fr</code>: <code>1fr 1fr 1fr</code> — chia đều chỗ trống</h3>
+        <div class="demo cols-fr">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3>Trộn: <code>100px 1fr 2fr</code> — cột 1 cố định, phần dư chia 1 : 2</h3>
+        <div class="demo cols-mix">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>repeat(4, 1fr)</code> — viết tắt của 4 cột bằng nhau</h3>
+        <div class="demo cols-repeat">
+            <div class="box">1</div><div class="box">2</div>
+            <div class="box">3</div><div class="box">4</div>
+        </div>
+
+        <p class="note">
+            <code>fr</code> = fraction, phần chia của chỗ trống <em>còn lại</em> sau khi
+            đã trừ các cột cố định và <code>gap</code>. Nhiều item hơn số cột thì Grid
+            tự sinh thêm hàng mới.
+        </p>
+
+        <h2>2. grid-template-rows — chia hàng</h2>
+        <h3><code>grid-template-rows: 60px 120px</code></h3>
+        <div class="demo rows-fixed">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+            <div class="box">4</div><div class="box">5</div><div class="box">6</div>
+        </div>
+
+        <h2>3. gap — khe giữa các ô</h2>
+
+        <h3><code>gap: 0</code></h3>
+        <div class="demo gap-0">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>gap: 24px</code></h3>
+        <div class="demo gap-24">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>row-gap: 30px; column-gap: 4px</code> — tách riêng hàng và cột</h3>
+        <div class="demo gap-rc">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+            <div class="box">4</div><div class="box">5</div><div class="box">6</div>
+        </div>
+
+        <h2>4. grid-column / grid-row — cho item chiếm nhiều ô</h2>
+        <p>
+            Lưới 4 cột có <strong>5 vạch dọc</strong>, đánh số 1 → 5.
+            Item đặt vị trí bằng <code>grid-column: vạch-bắt-đầu / vạch-kết-thúc</code>.
+        </p>
+
+        <h3><code>grid-column: 1 / 3</code> — từ vạch 1 đến vạch 3, chiếm 2 cột</h3>
+        <div class="demo lines">
+            <div class="box col-1-3">1 (1 / 3)</div>
+            <div class="box">2</div><div class="box">3</div><div class="box">4</div>
+        </div>
+
+        <h3><code>grid-column: span 2</code> — chiếm 2 cột kể từ chỗ đang đứng</h3>
+        <div class="demo lines">
+            <div class="box">1</div>
+            <div class="box col-span2">2 (span 2)</div>
+            <div class="box">3</div><div class="box">4</div>
+        </div>
+
+        <h3><code>grid-column: 1 / -1</code> — chiếm trọn chiều ngang</h3>
+        <div class="demo lines">
+            <div class="box col-full">1 (1 / -1)</div>
+            <div class="box">2</div><div class="box">3</div>
+            <div class="box">4</div><div class="box">5</div>
+        </div>
+
+        <h3><code>grid-row: span 2</code> — chiếm 2 hàng</h3>
+        <div class="demo lines">
+            <div class="box row-span2">1 (cao 2 hàng)</div>
+            <div class="box">2</div><div class="box">3</div><div class="box">4</div>
+            <div class="box">5</div><div class="box">6</div><div class="box">7</div>
+        </div>
+
+        <h2>5. justify-items / align-items — canh nội dung trong từng ô</h2>
+        <p><code>justify-items</code> canh theo <strong>ngang</strong>, <code>align-items</code> canh theo <strong>dọc</strong>.</p>
+
+        <h3>Mặc định (stretch) — ô kéo rộng hết cột</h3>
+        <div class="demo three">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>justify-items: center</code></h3>
+        <div class="demo three ji-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>justify-items: end</code></h3>
+        <div class="demo three ji-end">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>align-items: start</code> (khung cao 180px)</h3>
+        <div class="demo three tall ai-start">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>align-items: center</code></h3>
+        <div class="demo three tall ai-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>align-items: end</code></h3>
+        <div class="demo three tall ai-end">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <p class="note">
+            <code>place-items: center</code> là viết tắt của
+            <code>align-items: center; justify-items: center</code> — cách canh giữa
+            ngắn nhất trong CSS.
+        </p>
+
+        <h2>6. justify-content / align-content — canh cả lưới</h2>
+        <p>
+            Chỉ thấy được khi lưới <strong>nhỏ hơn</strong> container, tức cột dùng
+            <code>px</code> chứ không phải <code>fr</code> (dưới đây: 3 cột 80px).
+        </p>
+
+        <h3>Mặc định (start)</h3>
+        <div class="demo small">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>justify-content: center</code></h3>
+        <div class="demo small jc-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>justify-content: space-between</code></h3>
+        <div class="demo small jc-between">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <h3><code>align-content: center</code> (khung cao 180px)</h3>
+        <div class="demo small tall ac-center">
+            <div class="box">1</div><div class="box">2</div><div class="box">3</div>
+        </div>
+
+        <p class="note">
+            Dễ nhầm: <code>*-items</code> canh nội dung <em>bên trong ô</em>,
+            <code>*-content</code> canh <em>toàn bộ lưới</em> trong container.
+        </p>
+
+        <h2>7. justify-self / align-self — ghi đè cho riêng một ô</h2>
+        <div class="demo three tall">
+            <div class="box self-start">start</div>
+            <div class="box self-center">center</div>
+            <div class="box self-end">end</div>
+        </div>
+
+        <h2>8. Mẫu thường gặp — bố cục trang</h2>
+        <p>
+            Lưới 3 cột: header và footer <code>grid-column: 1 / -1</code> trải hết,
+            main <code>span 2</code>, còn nav chiếm 1 cột.
+        </p>
+        <div class="page-layout">
+            <div class="hd">header (1 / -1)</div>
+            <div class="nav">nav</div>
+            <div class="main">main (span 2)</div>
+            <div class="ft">footer (1 / -1)</div>
+        </div>
+
+        <h2>Tổng kết</h2>
+        <p><strong>Đặt trên container:</strong></p>
+        <ul>
+            <li><code>display: grid</code> — bật grid</li>
+            <li><code>grid-template-columns</code> / <code>grid-template-rows</code> — vẽ khung lưới</li>
+            <li><code>gap</code> / <code>row-gap</code> / <code>column-gap</code> — khe giữa ô</li>
+            <li><code>justify-items</code> / <code>align-items</code> — canh nội dung trong ô</li>
+            <li><code>justify-content</code> / <code>align-content</code> — canh cả lưới trong container</li>
+        </ul>
+        <p><strong>Đặt trên item:</strong></p>
+        <ul>
+            <li><code>grid-column</code> / <code>grid-row</code> — vị trí theo vạch, hoặc <code>span n</code></li>
+            <li><code>justify-self</code> / <code>align-self</code> — ghi đè canh lề</li>
+        </ul>
+        <p>
+            Grid làm bố cục <strong>hai chiều</strong>. Hai cái không loại trừ nhau:
+            thường dùng Grid cho khung trang, rồi Flexbox bên trong từng ô.
+        </p>
+    </div>
+</body>
+</html>
